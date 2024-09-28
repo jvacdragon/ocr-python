@@ -43,7 +43,7 @@ npm install
 ## Pasta ./brand-api
 
 ### Entity
-Adentro da pasta -/brand-api temos a pasta ./Entity contendo a entidade que iremos salvar no banco de dados, ela está localizada no arquivo beerEntity.ts. Este é o arquivo completo:
+Dentro da pasta -/brand-api temos a pasta ./Entity contendo a entidade que iremos salvar no banco de dados, ela está localizada no arquivo beerEntity.ts. Este é o arquivo completo:
 
 ```typescript
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
@@ -78,7 +78,7 @@ O arquivo beerController.ts é responsável por ser o controlador da API, recebe
     brandName: NOME_DA_MARCA
 
 ```
-* beerMdule.ts
+* beerModule.ts
 Este arquivo é o responsável por organizar todas as funcionalidades relacionadas à cerveja, no caso todas as principais para o funcionamento dessa API. Seu código é:
 
 ```typescript

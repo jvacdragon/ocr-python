@@ -28,7 +28,7 @@ export class BeerService{
 
         // Verificando se a marca está vazia
         if (!brandName) {
-            throw new HttpException('Nenhuma marca encontrada na imagem.', HttpStatus.NOT_FOUND);
+            throw new HttpException('Nenhuma marca encontrada na imagem.', HttpStatus.UNPROCESSABLE_ENTITY);
         }
         
         const beer = this.beerRepositoy.create({

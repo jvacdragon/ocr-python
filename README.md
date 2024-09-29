@@ -140,4 +140,151 @@ pip install opencv-python
 pip install pytesseract
 ```
 
-Link para instalação do <a href: "https://github.com/UB-Mannheim/tesseract/wiki" target="blank"> Tesseract</a> no Windows 
+Link para instalação do Tesseract no Windows: https://github.com/UB-Mannheim/tesseract/wiki
+
+### Código para OCR em app.py
+Este é o arquivo que responsável por receber a imagem em base64, converte-la para um arquivo e fazer todo o processamento da imagem para enfiar enviar a resposta ao backend em NestJS. A partir daqui seão explicados os trechos de código para que se possa compreende como é feito esse processamento de imagem. Estarei dividindo o código em cinco seções para entendimento: Importações, inicio da função, pré processamento de imagem, pós processamento de imagem e finalização
+
+#### Imports
+Aqui é onde estão sendo importadas bibliotecas e funções delas que serão utilizadas ao decorrer doc código
+
+```python
+from flask import Flask, request, jsonify
+from PIL import Image, ImageEnhance
+import base64
+import pytesseract
+from io import BytesIO
+import cv2
+import numpy as np
+import re
+```
+
+- Flask está sendo utilizado para criar a API
+- Pillow para manipular a imagem recebida pela API
+- base64 é usado para decodificar a imagem recebida
+- pytesseract é usado para identificar palavras na imagem
+- io.BytesIO está sendo usado para consersão da imagem base64.
+- cv2 (OpenCV) serve para o processamento de imagem
+- numpy (np) Usada em conjunto com OpenCV para manipulação de arrays de pixels da imagem
+- re é a bliblioteca de expressões regulares usada para o pós processamento da imagem
+
+
+#### Inicialização de servidor Flask e inicio da função
+
+Abaixo é iniciado o servidor Flask e definida a rota para a função que irá lidar com o método POST. A rota sendo '/ocr'.
+
+```python
+app = Flask(__name__)
+
+@app.route('/ocr', methods=['POST'])
+def ocr():
+```
+
+Aqui é feita a verificação de se o que foi recebido pela requisição tem o campo 'file', caso nao tenha, será retornado um erro 400 com a mensagem descrita.
+
+```python
+data = request.json
+
+    if 'file' not in data:
+        return jsonify({'error':'Nenhum arquivo encontrado'}), 400
+```
+
+No trecho abaixo a imagem recebida é decodificada e convertida para RGB, para que se possa manipular suas cores
+
+```python
+    imageData = base64.b64decode(data['file'])
+    image = Image.open(BytesIO(imageData)).convert('RGB')
+```
+
+#### Pré processamento da imagem
+
+Abaixo é a primeira manipulação de imagem, aumentando seu contraste para tentar distinguir o fundo dela das palavras
+
+```python
+    enhancer = ImageEnhance.Contrast(image)
+    enhancedImage = enhancer.enhance(2)
+```
+
+Convertendo imagem para formato RGB, para que possa ser manipulada pelo OpenCV:
+
+```python
+    image_cv = cv2.cvtColor(np.array(enhancedImage), cv2.COLOR_RGB2BGR)
+```
+
+Notei que diversas marcas de cerveja utilizam vermelho no fundo e percebi que nas primeiras versões do código isso estava atrapalhando na manipulação da imagem para reconhecer palavras. Então abaixo existe um código para detectar tons mais escuros e mais claros de vermelho com a finalidade de remover da imagem.
+
+```python
+    hsv_image = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)
+    lower_red = np.array([0, 70, 50]) 
+    upper_red = np.array([10, 255, 255])  
+    mask1 = cv2.inRange(hsv_image, lower_red, upper_red)
+
+    lower_red = np.array([170, 70, 50])  
+    upper_red = np.array([180, 255, 255])  
+    mask2 = cv2.inRange(hsv_image, lower_red, upper_red)
+
+    red_mask = mask1 + mask2
+```
+
+Abaixo são aplicadas as máscaras feitas para tons de vermelho, visando a remoção:
+
+```python
+    red_mask_inv = cv2.bitwise_not(red_mask)
+    result = cv2.bitwise_and(image_cv, image_cv, mask=red_mask_inv)
+```
+
+E aqui a imagem é aplicado tons de cinza na imagem para melhor identificação de palavras:
+
+```python
+    gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+```
+
+Logo depois é utilizado método para suavizar a imagem e binarizar ela (tornar preto e branco) através do método de Otsu:
+
+```python
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+```
+
+Melhorando nitidez de bordas:
+
+```python
+kernel = np.ones((3, 3), np.uint8)
+dilated = cv2.dilate(binary, kernel, iterations=1)
+eroded = cv2.erode(dilated, kernel, iterations=1)
+```
+
+Fazendo inversão de imagem para ser melhor lido pelo OCR:
+
+```python
+    inverted = cv2.bitwise_not(eroded)
+```
+
+Abaixo é definida a configuração do OCR. Sendo oem 3 o modo de reconhecimento OCR e psm 6 o modo de segmentação, que é usado para linhas de texto. Ao fim, é extraída a String identificada para a variável brandName
+
+```python
+    customConfig = '--oem 3 --psm 6'
+    brandName = pytesseract.image_to_string(inverted, config=customConfig)
+
+```
+
+#### Pós processamento da imagem
+Após o pré processamento, ainda se faz necessário processar o que foi extraído da imagem, visto que podem conter erros. O código usado para isso foi: 
+
+```python
+    brandName = re.sub(r'[^a-zA-Z\s]', '', brandName)
+    brandName = brandName.replace("\n", "")
+```
+
+Acima é usado uma expressão regular para remover todos os caractere que não sejam letras maiúsculas, minúsculas ou espaços. Também é substituído todas as quebras de linha (\n) por uma string vazia
+
+#### Finalização
+Por fim, é retornado o json com o nome da marca e logo após inicializado o servidor flask na porta 5000:
+
+```python
+    return jsonify({'brand': brandName})
+
+if __name__ == '__main__':
+    app.run(port=5000)
+```

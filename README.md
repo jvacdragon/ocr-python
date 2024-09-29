@@ -143,7 +143,7 @@ pip install pytesseract
 Link para instalação do Tesseract no Windows: https://github.com/UB-Mannheim/tesseract/wiki
 
 ### Código para OCR em app.py
-Este é o arquivo que responsável por receber a imagem em base64, converte-la para um arquivo e fazer todo o processamento da imagem para enfiar enviar a resposta ao backend em NestJS. A partir daqui seão explicados os trechos de código para que se possa compreende como é feito esse processamento de imagem. Estarei dividindo o código em cinco seções para entendimento: Importações, inicio da função, pré processamento de imagem, pós processamento de imagem e finalização
+Este é o arquivo que responsável por receber a imagem em base64, converte-la para um arquivo e fazer todo o processamento da imagem para enviar a resposta ao backend em NestJS. A partir daqui serão explicados os trechos de código para que se possa compreender como é feito esse processamento de imagem. Estarei dividindo o código em cinco seções para entendimento: Importações, inicio da função, pré processamento de imagem, pós processamento de imagem e finalização
 
 #### Imports
 Aqui é onde estão sendo importadas bibliotecas e funções delas que serão utilizadas ao decorrer doc código
@@ -163,7 +163,7 @@ import re
 - Pillow para manipular a imagem recebida pela API
 - base64 é usado para decodificar a imagem recebida
 - pytesseract é usado para identificar palavras na imagem
-- io.BytesIO está sendo usado para consersão da imagem base64.
+- io.BytesIO está sendo usado para conversão da imagem base64.
 - cv2 (OpenCV) serve para o processamento de imagem
 - numpy (np) Usada em conjunto com OpenCV para manipulação de arrays de pixels da imagem
 - re é a bliblioteca de expressões regulares usada para o pós processamento da imagem
@@ -180,7 +180,7 @@ app = Flask(__name__)
 def ocr():
 ```
 
-Aqui é feita a verificação de se o que foi recebido pela requisição tem o campo 'file', caso nao tenha, será retornado um erro 400 com a mensagem descrita.
+Aqui é feita a verificação de se o que foi recebido pela requisição tem o campo 'file', caso não tenha, será retornado um erro 400 com a mensagem descrita.
 
 ```python
 data = request.json

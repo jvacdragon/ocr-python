@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Beer } from "../Entity/beerEntity";
+import { Beer } from "../Entity/beer.entity";
 import { Repository } from "typeorm";
 import axios from "axios";
 

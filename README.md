@@ -5,11 +5,11 @@ Aqui será documentado os principais arquivos utilizados na criação de uma API
 ## Divisão de pastas
 - Na pasta ./brand-api está localizada a API feita em NestJS, onde no caminho ./brand-api/src estão as duas principais pastas contendo o código necessário para criação da entidade de cerveja, que é usado para ORM, armazenando seus dados no SQLite e também há os arquivos arquivos que lidam com as requisições HTTP, comunicação com a API de OCR e com a manipulação dos dados para criar a entidade de cerveja.
 
-- Na pasta read-brand-api é onde tem o código Python responsável por receber a imagem e aplicar técnicas de processamento de imagem para converte-las em texto e enviar como resposta à API do NestJS.
+- Na pasta ocr-api é onde tem o código Python responsável por receber a imagem e aplicar técnicas de processamento de imagem para converte-las em texto e enviar como resposta à API do NestJS.
 
 ## Bibliotecas necessária para o funcionamento das APIs
 
-- Na pasta read-brand-api, onde está localizado o código que realiza o OCR, se faz necessária a instalação das bibliotecas: flask, pillow, pytesseract, opencv e numpy. Para realizar essas instalaçõs pela linha de comando se usa esse código em bash:
+- Na pasta ocr-api, onde está localizado o código que realiza o OCR, se faz necessária a instalação das bibliotecas: flask, pillow, pytesseract, opencv e numpy. Para realizar essas instalaçõs pela linha de comando se usa esse código em bash:
 
 ``` 
 pip install flask pillow pytesseract opencv-python-headless numpy 
@@ -67,10 +67,10 @@ export class Beer{
 Neste arquivo é mapeada a classe Beer, que é denotada por @Entity(), indicando que é uma entidade a ser mapeada para o banco de dados sqlite. Possui o campo de id, que é incrementado automaticamente sempre que é adicionado um registro ao banco de dados e é a primary key da tabela, um campo de brand, que é onde está armazenado o nome da marca, campo urlImage onde se é armazenado o nome do arquivo e um campo createdAt que é onde fica guardada a data de criação desse registro.
 
 ### Beer
-No mesmo nível da pasta Entity, temos a pasta Beer, nela estão contidos três arquivos, são eles: beerController.ts, beerModule.ts e beerService.ts.
+No mesmo nível da pasta Entity, temos a pasta Beer, nela estão contidos três principais arquivos, são eles: beer.controller.ts, beer.module.ts e beer.service.ts. Também há mais dois arquivos de teste referentes a controller e service, que estão denotados com o sufixo "spec.ts"
 
 * beerController
-O arquivo beerController.ts é responsável por ser o controlador da API, recebendo diretamente o arquivo de imagem através de um método POST enviado para o endereço '/beer'. Nele há uma injeção de depêndencia para BeerService. Após receber a image, o controller tenta criar uma entidade Beer através do BeerService. Caso seja bem sucedida essa criação, será retornado o seguinte código json:
+O arquivo beer.controller.ts é responsável por ser o controlador da API, recebendo diretamente o arquivo de imagem através de um método POST enviado para o endereço '/beer'. Nele há uma injeção de depêndencia para BeerService. Após receber a image, o controller tenta criar uma entidade Beer através do BeerService. Caso seja bem sucedida essa criação, será retornado o seguinte código json:
 
 ```json
 
@@ -78,15 +78,15 @@ O arquivo beerController.ts é responsável por ser o controlador da API, recebe
     brandName: NOME_DA_MARCA
 
 ```
-* beerModule.ts
+* beer.module.ts
 Este arquivo é o responsável por organizar todas as funcionalidades relacionadas à cerveja, no caso todas as principais para o funcionamento dessa API. Seu código é:
 
 ```typescript
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Beer } from "src/Entity/beerEntity";
-import { BeerController } from "./beerController";
-import { BeerService } from "./beerService";
+import { Beer } from "src/Entity/beer.entity";
+import { BeerController } from "./beer.controller.ts";
+import { BeerService } from "./beer.service";
 
 
 @Module({
@@ -100,7 +100,7 @@ export class BeerModule{}
 - Em controllers está sendo definido quem é o controlador
 - Em provider está definindo que BeerService será o responsável pelo service
 
-* beerService.ts
+* beer.service.ts
 Este é o arquivo responsável pela manipulação dos dados recebidos pela controller para que se possa criar a entidade Beer para o banco de dados. Há uma injeção de dependências de Repository<Beer> indicando que é o responsável por manipular a tabela que armazena Beer. Nele existe a função createBeer(), que inicialmente recebe um arquivo de imagem como parâmetro e depois o transforma em uma imagem de base64. É criado um objeto formData:
 
 ``` typescript
@@ -110,3 +110,34 @@ const formData = {
         }
 ```
 E é feita uma requisição POST para a API de OCR em python, no endpoint "/ocr" com formData no body da requisição. Se o valor de retorno dessa requisição tiver um brandName com valor de uma String vaiza, será retornado um erro 404, com a mensagem: "Nenhuma marca encontrada na imagem.". Caso não tenha valor de retorno uma String vazia, será criado no banco de dados uma entidade Beer com os dados referentes à resposta da requisição e esse objeto criado será retornado pela função.
+
+## Pasta  ./ocr-api
+
+Aqui é onde está o arquivo principal para a API de OCR. Aqui estão as bibliotecas necessárias e o que fazer para instala-las para que o programa funcione: 
+
+* Flask - framework web para Python
+```
+pip install Flask
+```
+
+* Pillow - biblioteca para manipulação de imagens
+```
+pip install pillow
+```
+
+* Numpy - biblioteca para manipulação de arrays e operações matemáticas
+```
+pip install numpy
+```
+
+* Opencv-python - para processamento de imagens
+```
+pip install opencv-python
+```
+
+* Pytesseract - para utilizar o Tesseract OCR em python (Certifique-se de ter instalado corretamente o Tessseract OCR na sua máquina)
+```
+pip install pytesseract
+```
+
+Link para instalação do <a href: "https://github.com/UB-Mannheim/tesseract/wiki" target="blank"> Tesseract</a> no Windows 

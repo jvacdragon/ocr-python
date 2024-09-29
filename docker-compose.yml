@@ -1,0 +1,22 @@
+version: '3'
+services:
+  nestjs:
+    build: 
+      context: ./brand-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./brand-api:/usr/src/app
+      #- ./data/nestjs:/usr/src/app/db
+    depends_on:
+      - python_app
+
+  python_app:
+    build: 
+      context: ./ocr-api
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ocr-api:/usr/src/app

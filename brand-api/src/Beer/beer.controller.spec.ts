@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BeerController } from './beerController';
-import { BeerService } from './beerService';
+import { BeerController } from './beer.controller.ts';
+import { BeerService } from './beer.service.ts';
 import { Response } from 'express';
 import { createMock } from '@golevelup/ts-jest';
 
@@ -15,7 +15,7 @@ describe('BeerController', () => {
         {
           provide: BeerService,
           useValue: {
-            createBeer: jest.fn(), // Mock do método createBeer
+            createBeer: jest.fn(),
           },
         },
       ],

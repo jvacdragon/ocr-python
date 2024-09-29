@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Beer } from './Entity/beerEntity';
-import { BeerModule } from './Beer/beerModule';
+import { BeerModule } from './Beer/beer.module';
 
 @Module({
   imports: [

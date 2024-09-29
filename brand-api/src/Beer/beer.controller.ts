@@ -1,5 +1,5 @@
 import { Controller, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { BeerService } from './beerService';
+import { BeerService } from './beer.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 

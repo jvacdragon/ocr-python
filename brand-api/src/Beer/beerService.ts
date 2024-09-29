@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Beer } from "src/Entity/beerEntity";
+import { Beer } from "../Entity/beerEntity";
 import { Repository } from "typeorm";
 import axios from "axios";
 
@@ -26,7 +26,6 @@ export class BeerService{
     
         const brandName = response.data.brand.trim(); // Removendo espaços em branco
 
-        // Verificando se a marca está vazia
         if (!brandName) {
             throw new HttpException('Nenhuma marca encontrada na imagem.', HttpStatus.UNPROCESSABLE_ENTITY);
         }

@@ -7,11 +7,38 @@ Aqui será documentado os principais arquivos utilizados na criação de uma API
 
 - Na pasta ocr-api é onde tem o código Python responsável por receber a imagem e aplicar técnicas de processamento de imagem para converte-las em texto e enviar como resposta à API do NestJS.
 
+## Como rodar esta aplicação:
+
+1. Dê um git clone no repositório dessa forma: 
+
+``` bash
+git clone https://github.com/seu-usuario/nome-do-repositorio.git
+```
+
+2. Em seguida vá para o diretório do projeto:
+```bash
+cd nome-do-repositorio
+```
+
+3. Rodar o docker-compose com o comando:
+```bash
+docker-compose up --build
+```
+
+Após esses passos ja está pronto para ser utilizado o programa. Recomendo o uso de algum API Tester, como Talend API.
+Deverá ser feita uma requisição do tipo POST, onde no Headers deveter um Content-Type: multipart/form-data e no Body da requisição um campo "file" com o arquivo a ser enviado para: http://localhost:3000/beer 
+
+Caso queira testar pela linha de comando, é possivel utilizar:
+
+```bash
+curl -X POST http://localhost:3000/beer -F "file=@/caminho/para/imagem.jpg"
+```
+
 ## Bibliotecas necessária para o funcionamento das APIs
 
 - Na pasta ocr-api, onde está localizado o código que realiza o OCR, se faz necessária a instalação das bibliotecas: flask, pillow, pytesseract, opencv e numpy. Para realizar essas instalaçõs pela linha de comando se usa esse código em bash:
 
-``` 
+``` bash
 pip install flask pillow pytesseract opencv-python-headless numpy 
 
 ```
@@ -116,27 +143,27 @@ E é feita uma requisição POST para a API de OCR em python, no endpoint "/ocr"
 Aqui é onde está o arquivo principal para a API de OCR. Aqui estão as bibliotecas necessárias e o que fazer para instala-las para que o programa funcione: 
 
 * Flask - framework web para Python
-```
+```bash
 pip install Flask
 ```
 
 * Pillow - biblioteca para manipulação de imagens
-```
+```bash
 pip install pillow
 ```
 
 * Numpy - biblioteca para manipulação de arrays e operações matemáticas
-```
+```bash
 pip install numpy
 ```
 
 * Opencv-python - para processamento de imagens
-```
+```bash
 pip install opencv-python
 ```
 
 * Pytesseract - para utilizar o Tesseract OCR em python (Certifique-se de ter instalado corretamente o Tessseract OCR na sua máquina)
-```
+```bash
 pip install pytesseract
 ```
 

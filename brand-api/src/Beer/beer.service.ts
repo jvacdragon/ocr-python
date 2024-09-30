@@ -23,7 +23,7 @@ export class BeerService{
         }
 
         const pythonApiUrl = process.env.PYTHON_API_URL|| 'http://python_app:5000'
-        const response = await axios.post(`${pythonApiUrl}/ocr`, formData) 
+        const response = await axios.post(`${pythonApiUrl}/process-image`, formData) 
     
         const brandName = response.data.brand.trim();
 

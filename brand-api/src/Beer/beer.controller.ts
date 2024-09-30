@@ -3,7 +3,7 @@ import { BeerService } from './beer.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 
-@Controller('beer')
+@Controller('upload')
 export class BeerController {
   constructor(private readonly BeerService: BeerService) {}
 

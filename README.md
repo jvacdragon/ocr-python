@@ -1,6 +1,6 @@
 # Documentação do Upload e Processamento de Imagens com OCR para Identificação de Marcas de Cerveja
 
-Aqui será documentado os principais arquivos utilizados na criação de uma API que tem como objetivo identificar marcas de cerveja através de suas logos.
+Aqui será documentado os principais arquivos utilizados na criação de uma API que tem como objetivo identificar marcas de cerveja através de suas logos. Também terá instruções de como rodar o projeto no seu Docker e como testar ele funcionando.
 
 ## Divisão de pastas
 - Na pasta ./brand-api está localizada a API feita em NestJS, onde no caminho ./brand-api/src estão as duas principais pastas contendo o código necessário para criação da entidade de cerveja, que é usado para ORM, armazenando seus dados no SQLite e também há os arquivos arquivos que lidam com as requisições HTTP, comunicação com a API de OCR e com a manipulação dos dados para criar a entidade de cerveja.
@@ -12,12 +12,12 @@ Aqui será documentado os principais arquivos utilizados na criação de uma API
 1. Dê um git clone no repositório dessa forma: 
 
 ``` bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/jvacdragon/teste-tecnico.git
 ```
 
 2. Em seguida vá para o diretório do projeto:
 ```bash
-cd nome-do-repositorio
+cd teste-tecnico
 ```
 
 3. Rodar o docker-compose com o comando:
@@ -26,12 +26,12 @@ docker-compose up --build
 ```
 
 Após esses passos ja está pronto para ser utilizado o programa. Recomendo o uso de algum API Tester, como Talend API.
-Deverá ser feita uma requisição do tipo POST, onde no Headers deveter um Content-Type: multipart/form-data e no Body da requisição um campo "file" com o arquivo a ser enviado para: http://localhost:3000/beer 
+Deverá ser feita uma requisição do tipo POST, onde no Headers deveter um Content-Type: multipart/form-data e no Body da requisição um campo "file" com o arquivo a ser enviado para: http://localhost:3000/upload 
 
 Caso queira testar pela linha de comando, é possivel utilizar:
 
 ```bash
-curl -X POST http://localhost:3000/beer -F "file=@/caminho/para/imagem.jpg"
+curl -X POST http://localhost:3000/upload -F "file=@/caminho/para/imagem.jpg"
 ```
 
 ## Bibliotecas necessária para o funcionamento das APIs

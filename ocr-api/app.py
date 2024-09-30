@@ -11,7 +11,7 @@ import re
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/ocr', methods=['POST'])
+@app.route('/process-image', methods=['POST'])
 def ocr():
     data = request.json
 

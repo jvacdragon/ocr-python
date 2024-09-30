@@ -1,21 +1,23 @@
-#imagem do nodeJS como base
-FROM node:18-alpine
+# Usando node:18 como base (Debian-based)
+FROM node:18
 
-#diretório de trabalho
+# Diretório de trabalho
 WORKDIR /usr/src/app
 
+# Copiar package.json e package-lock.json
 COPY package*.json ./
 
-RUN npm install sqlite3 --save
+# Atualizar pacotes e instalar sqlite3 usando apt-get
+RUN apt-get update && apt-get install -y sqlite3
 
+# Instalar dependências do Node.js
 RUN npm install
 
-RUN apk add --no-cache sqlite sqlite-dev
-
-#copiar o resto dos arquivos
+# Copiar o resto dos arquivos
 COPY . .
 
+# Expor a porta
 EXPOSE 3000
 
-#comandos para rodar aplicação
+# Rodar a aplicação
 CMD ["npm", "run", "start:prod"]

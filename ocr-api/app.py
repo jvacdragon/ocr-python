@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from PIL import Image, ImageEnhance
 import base64
+from flask_cors import CORS
 import pytesseract
 from io import BytesIO
 import cv2
@@ -8,6 +9,7 @@ import numpy as np
 import re
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
@@ -63,4 +65,4 @@ def ocr():
     return jsonify({'brand': brandName})
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host = '0.0.0.0', port=5000)

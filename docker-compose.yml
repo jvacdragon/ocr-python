@@ -8,7 +8,9 @@ services:
       - "3000:3000"
     volumes:
       - ./brand-api:/usr/src/app
-      #- ./data/nestjs:/usr/src/app/db
+      - '/usr/src/app/node_modules'
+    environment:
+      - DATABASE_PATH=/usr/src/app/database.sqlite
     depends_on:
       - python_app
 

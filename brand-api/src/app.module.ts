@@ -7,7 +7,7 @@ import { BeerModule } from './Beer/beer.module';
   imports: [
     TypeOrmModule.forRoot({
       type:'sqlite',
-      database: 'database.sqlite',
+      database: process.env.DATABASEPATH || 'database.sqlite',
       entities: [Beer],
       synchronize: true
     }),

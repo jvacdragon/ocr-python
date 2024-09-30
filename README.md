@@ -61,7 +61,7 @@ Se faz necessária a instalação do tesseract na máquina em que se executa o c
     "typeorm": "^0.3.20"
   }
 ```
-basta aplicar este código em seu pakage.json e executar nas linhas de comando:
+basta aplicar este código em seu package.json e executar nas linhas de comando:
 
 ```
 npm install

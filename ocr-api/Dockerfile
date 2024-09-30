@@ -8,7 +8,6 @@ RUN apt-get update && \
 
 WORKDIR /usr/src/app
 
-#copiar e instalar dependências
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 

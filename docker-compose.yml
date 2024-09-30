@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   nestjs:
     build: 
@@ -11,6 +11,7 @@ services:
       - '/usr/src/app/node_modules'
     environment:
       - DATABASE_PATH=/usr/src/app/database.sqlite
+      - PYTHON_API_URL=http://python_app:5000
     depends_on:
       - python_app
 

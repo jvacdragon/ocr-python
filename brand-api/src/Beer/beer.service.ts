@@ -22,8 +22,10 @@ export class BeerService{
             fileName: image.originalname
         }
 
-        //const response = await axios.post('http://localhost:5000/ocr', formData); //conexao local
-        const response = await axios.post('http://python_app:5000/ocr', formData) //conexao entre services no docker
+        //const response = await axios.post('http://localhost:5000/ocr', formData); //conexao local (funciona em local host)
+
+        const pythonApiUrl = process.env.PYTHON_API_URL
+        const response = await axios.post(`${pythonApiUrl}/ocr`, formData) //conexao entre services no docker (NAO TA DANDO CERTO)
     
         const brandName = response.data.brand.trim(); // Removendo espaços em branco
 

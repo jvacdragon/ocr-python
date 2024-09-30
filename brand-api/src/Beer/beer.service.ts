@@ -22,12 +22,10 @@ export class BeerService{
             fileName: image.originalname
         }
 
-        //const response = await axios.post('http://localhost:5000/ocr', formData); //conexao local (funciona em local host)
-
         const pythonApiUrl = process.env.PYTHON_API_URL|| 'http://python_app:5000'
-        const response = await axios.post(`${pythonApiUrl}/ocr`, formData) //conexao entre services no docker (NAO TA DANDO CERTO) 
+        const response = await axios.post(`${pythonApiUrl}/ocr`, formData) 
     
-        const brandName = response.data.brand.trim(); // Removendo espaços em branco
+        const brandName = response.data.brand.trim();
 
         if (!brandName) {
             throw new HttpException('Nenhuma marca encontrada na imagem.', HttpStatus.UNPROCESSABLE_ENTITY);

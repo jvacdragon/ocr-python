@@ -171,10 +171,11 @@ import re
 
 #### Inicialização de servidor Flask e inicio da função
 
-Abaixo é iniciado o servidor Flask e definida a rota para a função que irá lidar com o método POST. A rota sendo '/ocr'.
+Abaixo é iniciado o servidor Flask e utilizada a função CORS() em app para posteriormente fazer configuração de CORS, permitindo acessos externos a API e então é definida a rota para a função que irá lidar com o método POST. A rota sendo '/ocr'.
 
 ```python
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/ocr', methods=['POST'])
 def ocr():
@@ -233,26 +234,18 @@ Abaixo são aplicadas as máscaras feitas para tons de vermelho, visando a remo�
     result = cv2.bitwise_and(image_cv, image_cv, mask=red_mask_inv)
 ```
 
-E aqui a imagem é aplicado tons de cinza na imagem para melhor identificação de palavras:
+E aqui na imagem é aplicado tons de cinza na imagem para melhor identificação de palavras:
 
 ```python
     gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
 ```
 
-Logo depois é utilizado método para suavizar a imagem e binarizar ela (tornar preto e branco) através do método de Otsu:
+Logo depois é utilizado método de thresholding, processo de converão de uma imagem em escala cinza para uma imagem binária(preto e branco) através do método de Otsu:
 
 ```python
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-```
-
-Melhorando nitidez de bordas:
-
-```python
-kernel = np.ones((3, 3), np.uint8)
-dilated = cv2.dilate(binary, kernel, iterations=1)
-eroded = cv2.erode(dilated, kernel, iterations=1)
 ```
 
 Fazendo inversão de imagem para ser melhor lido pelo OCR:
@@ -277,14 +270,14 @@ Após o pré processamento, ainda se faz necessário processar o que foi extraí
     brandName = brandName.replace("\n", "")
 ```
 
-Acima é usado uma expressão regular para remover todos os caractere que não sejam letras maiúsculas, minúsculas ou espaços. Também é substituído todas as quebras de linha (\n) por uma string vazia
+Acima é usado uma expressão regular para remover todos os caracteres que não sejam letras maiúsculas, minúsculas ou espaços. Também é substituído todas as quebras de linha (\n) por uma string vazia
 
 #### Finalização
-Por fim, é retornado o json com o nome da marca e logo após inicializado o servidor flask na porta 5000:
+Por fim, é definido que qualquer dominio pode fazer requisição para esta API e é retornado o json com o nome da marca e logo após inicializado o servidor flask na porta 5000:
 
 ```python
     return jsonify({'brand': brandName})
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host = '0.0.0.0', port=5000)
 ```

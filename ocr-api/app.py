@@ -48,11 +48,11 @@ def ocr():
 
     _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    kernel = np.ones((3, 3), np.uint8)
-    dilated = cv2.dilate(binary, kernel, iterations=1)
-    eroded = cv2.erode(dilated, kernel, iterations=1)
+    #kernel = np.ones((3, 3), np.uint8)
+    #dilated = cv2.dilate(binary, kernel, iterations=1)
+    #eroded = cv2.erode(dilated, kernel, iterations=1)
 
-    inverted = cv2.bitwise_not(eroded)
+    inverted = cv2.bitwise_not(binary)
 
     #configuração do pytesseract e transformando em string
     customConfig = '--oem 3 --psm 6'

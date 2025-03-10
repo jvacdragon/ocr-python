@@ -1,9 +1,9 @@
-# Documentação do Upload e Processamento de Imagens com OCR para Identificação de Marcas de Cerveja
+# Documentação do Upload e Processamento de Imagens com OCR para Identificação de Marcas
 
-Aqui será documentado os principais arquivos utilizados na criação de uma API que tem como objetivo identificar marcas de cerveja através de suas logos. Também terá instruções de como rodar o projeto no seu Docker e como testar ele funcionando.
+Aqui será documentado os principais arquivos utilizados na criação de uma API que tem como objetivo identificar marcas marcas através de suas logos. Também terá instruções de como rodar o projeto no seu Docker e como testar ele funcionando.
 
 ## Divisão de pastas
-- Na pasta ./brand-api está localizada a API feita em NestJS, onde no caminho ./brand-api/src estão as duas principais pastas contendo o código necessário para criação da entidade de cerveja, que é usado para ORM, armazenando seus dados no SQLite e também há os arquivos arquivos que lidam com as requisições HTTP, comunicação com a API de OCR e com a manipulação dos dados para criar a entidade de cerveja.
+- Na pasta ./brand-api está localizada a API feita em NestJS, onde no caminho ./brand-api/src estão as duas principais pastas contendo o código necessário para criação da entidade marcas, que é usado para ORM, armazenando seus dados no SQLite e também há os arquivos arquivos que lidam com as requisições HTTP, comunicação com a API de OCR e com a manipulação dos dados para criar a entidade marcas.
 
 - Na pasta ocr-api é onde tem o código Python responsável por receber a imagem e aplicar técnicas de processamento de imagem para converte-las em texto e enviar como resposta à API do NestJS.
 
@@ -106,7 +106,7 @@ O arquivo brand.controller.ts é responsável por ser o controlador da API, rece
 
 ```
 * brand.module.ts
-Este arquivo é o responsável por organizar todas as funcionalidades relacionadas à cerveja, no caso todas as principais para o funcionamento dessa API. Seu código é:
+Este arquivo é o responsável por organizar todas as funcionalidades relacionadas à marca, no caso todas as principais para o funcionamento dessa API. Seu código é:
 
 ```typescript
 import { Module } from "@nestjs/common";
@@ -239,7 +239,7 @@ Convertendo imagem para formato RGB, para que possa ser manipulada pelo OpenCV:
     image_cv = cv2.cvtColor(np.array(enhancedImage), cv2.COLOR_RGB2BGR)
 ```
 
-Notei que diversas marcas de cerveja utilizam vermelho no fundo e percebi que nas primeiras versões do código isso estava atrapalhando na manipulação da imagem para reconhecer palavras. Então abaixo existe um código para detectar tons mais escuros e mais claros de vermelho com a finalidade de remover da imagem.
+Notei que diversas marcas utilizam vermelho no fundo e percebi que nas primeiras versões do código isso estava atrapalhando na manipulação da imagem para reconhecer palavras. Então abaixo existe um código para detectar tons mais escuros e mais claros de vermelho com a finalidade de remover da imagem.
 
 ```python
     hsv_image = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)

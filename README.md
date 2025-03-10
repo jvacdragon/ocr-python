@@ -12,12 +12,12 @@ Aqui será documentado os principais arquivos utilizados na criação de uma API
 1. Dê um git clone no repositório dessa forma: 
 
 ``` bash
-git clone https://github.com/jvacdragon/teste-tecnico.git
+git clone https://github.com/jvacdragon/ocr-python.git
 ```
 
 2. Em seguida vá para o diretório do projeto:
 ```bash
-cd teste-tecnico
+cd ocr-python
 ```
 
 3. Rodar o docker-compose com o comando:
@@ -70,13 +70,13 @@ npm install
 ## Pasta ./brand-api
 
 ### Entity
-Dentro da pasta -/brand-api temos a pasta ./Entity contendo a entidade que iremos salvar no banco de dados, ela está localizada no arquivo beerEntity.ts. Este é o arquivo completo:
+Dentro da pasta -/brand-api temos a pasta ./Entity contendo a entidade que iremos salvar no banco de dados, ela está localizada no arquivo brandEntity.ts. Este é o arquivo completo:
 
 ```typescript
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Beer{
+export class Brand{
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -91,13 +91,13 @@ export class Beer{
 
 }
 ```
-Neste arquivo é mapeada a classe Beer, que é denotada por @Entity(), indicando que é uma entidade a ser mapeada para o banco de dados sqlite. Possui o campo de id, que é incrementado automaticamente sempre que é adicionado um registro ao banco de dados e é a primary key da tabela, um campo de brand, que é onde está armazenado o nome da marca, campo urlImage onde se é armazenado o nome do arquivo e um campo createdAt que é onde fica guardada a data de criação desse registro.
+Neste arquivo é mapeada a classe Brand, que é denotada por @Entity(), indicando que é uma entidade a ser mapeada para o banco de dados sqlite. Possui o campo de id, que é incrementado automaticamente sempre que é adicionado um registro ao banco de dados e é a primary key da tabela, um campo de brand, que é onde está armazenado o nome da marca, campo urlImage onde se é armazenado o nome do arquivo e um campo createdAt que é onde fica guardada a data de criação desse registro.
 
-### Beer
-No mesmo nível da pasta Entity, temos a pasta Beer, nela estão contidos três principais arquivos, são eles: beer.controller.ts, beer.module.ts e beer.service.ts. Também há mais dois arquivos de teste referentes a controller e service, que estão denotados com o sufixo "spec.ts"
+### Brand
+No mesmo nível da pasta Entity, temos a pasta Brand, nela estão contidos três principais arquivos, são eles: brand.controller.ts, brand.module.ts e brand.service.ts. Também há mais dois arquivos de teste referentes a controller e service, que estão denotados com o sufixo "spec.ts"
 
-* beerController
-O arquivo beer.controller.ts é responsável por ser o controlador da API, recebendo diretamente o arquivo de imagem através de um método POST enviado para o endereço '/beer'. Nele há uma injeção de depêndencia para BeerService. Após receber a image, o controller tenta criar uma entidade Beer através do BeerService. Caso seja bem sucedida essa criação, será retornado o seguinte código json:
+* brandController
+O arquivo brand.controller.ts é responsável por ser o controlador da API, recebendo diretamente o arquivo de imagem através de um método POST enviado para o endereço '/brand'. Nele há uma injeção de depêndencia para BrandService. Após receber a image, o controller tenta criar uma entidade Brand através do BrandService. Caso seja bem sucedida essa criação, será retornado o seguinte código json:
 
 ```json
 
@@ -105,30 +105,30 @@ O arquivo beer.controller.ts é responsável por ser o controlador da API, receb
     brandName: NOME_DA_MARCA
 
 ```
-* beer.module.ts
+* brand.module.ts
 Este arquivo é o responsável por organizar todas as funcionalidades relacionadas à cerveja, no caso todas as principais para o funcionamento dessa API. Seu código é:
 
 ```typescript
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Beer } from "src/Entity/beer.entity";
-import { BeerController } from "./beer.controller.ts";
-import { BeerService } from "./beer.service";
+import { Brand } from "src/Entity/brand.entity";
+import { BrandController } from "./brand.controller.ts";
+import { BrandService } from "./brand.service";
 
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Beer])],
-    controllers: [BeerController],
-    providers: [BeerService]
+    imports: [TypeOrmModule.forFeature([Brand])],
+    controllers: [BrandController],
+    providers: [BrandService]
 })
-export class BeerModule{}
+export class BrandModule{}
 ```
-- Na parte de imports, é definido que a entidade Beer será gerenciada pelo módulo de ORM (Object-Relational Mapping)
+- Na parte de imports, é definido que a entidade Brand será gerenciada pelo módulo de ORM (Object-Relational Mapping)
 - Em controllers está sendo definido quem é o controlador
-- Em provider está definindo que BeerService será o responsável pelo service
+- Em provider está definindo que BrandService será o responsável pelo service
 
-* beer.service.ts
-Este é o arquivo responsável pela manipulação dos dados recebidos pela controller para que se possa criar a entidade Beer para o banco de dados. Há uma injeção de dependências de Repository<Beer> indicando que é o responsável por manipular a tabela que armazena Beer. Nele existe a função createBeer(), que inicialmente recebe um arquivo de imagem como parâmetro e depois o transforma em uma imagem de base64. É criado um objeto formData:
+* brand.service.ts
+Este é o arquivo responsável pela manipulação dos dados recebidos pela controller para que se possa criar a entidade Brand para o banco de dados. Há uma injeção de dependências de Repository<Brand> indicando que é o responsável por manipular a tabela que armazena Brand. Nele existe a função createBrand(), que inicialmente recebe um arquivo de imagem como parâmetro e depois o transforma em uma imagem de base64. É criado um objeto formData:
 
 ``` typescript
 const formData = {
@@ -136,7 +136,7 @@ const formData = {
             fileName: image.originalname
         }
 ```
-E é feita uma requisição POST para a API de OCR em python, no endpoint "/ocr" com formData no body da requisição. Se o valor de retorno dessa requisição tiver um brandName com valor de uma String vaiza, será retornado um erro 404, com a mensagem: "Nenhuma marca encontrada na imagem.". Caso não tenha valor de retorno uma String vazia, será criado no banco de dados uma entidade Beer com os dados referentes à resposta da requisição e esse objeto criado será retornado pela função.
+E é feita uma requisição POST para a API de OCR em python, no endpoint "/ocr" com formData no body da requisição. Se o valor de retorno dessa requisição tiver um brandName com valor de uma String vaiza, será retornado um erro 404, com a mensagem: "Nenhuma marca encontrada na imagem.". Caso não tenha valor de retorno uma String vazia, será criado no banco de dados uma entidade Brand com os dados referentes à resposta da requisição e esse objeto criado será retornado pela função.
 
 ## Pasta  ./ocr-api
 

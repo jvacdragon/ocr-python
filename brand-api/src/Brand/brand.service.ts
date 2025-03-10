@@ -1,19 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Beer } from "../Entity/beer.entity";
+import { Brand } from "../Entity/brand.entity";
 import { Repository } from "typeorm";
 import axios from "axios";
 
 
 
 @Injectable()
-export class BeerService{
+export class BrandService{
     constructor(
-        @InjectRepository(Beer)
-        private beerRepositoy: Repository<Beer>
+        @InjectRepository(Brand)
+        private brandRepositoy: Repository<Brand>
     ){}
 
-    async createBeer(image: Express.Multer.File): Promise<any>{
+    async createBrand(image: Express.Multer.File): Promise<any>{
 
         const base64Image = image.buffer.toString('base64')
 
@@ -31,13 +31,13 @@ export class BeerService{
             throw new HttpException('Nenhuma marca encontrada na imagem.', HttpStatus.UNPROCESSABLE_ENTITY);
         }
         
-        const beer = this.beerRepositoy.create({
+        const brand = this.brandRepositoy.create({
             brand: response.data.brand,
             urlImage: image.originalname,
             createdAt: new Date()
         });
 
-        await this.beerRepositoy.save(beer)
-        return beer
+        await this.brandRepositoy.save(brand)
+        return brand
     }
 }
